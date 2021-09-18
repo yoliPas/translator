@@ -15,7 +15,7 @@ public class TranslatorFileServiceTest {
     @Test
     public void testInvertFile() throws IOException {
         boolean b = false;
-        b = translatorFileService.invertFile();
+        b = translatorFileService.esInvertido();
         assertTrue(b);
     }
 }

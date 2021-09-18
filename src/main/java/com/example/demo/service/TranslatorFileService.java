@@ -12,14 +12,14 @@ import java.util.stream.Stream;
 @Service
 public class TranslatorFileService {
     private ArrayList<String>estrofas;
-    private ArrayList<String>invert;
+    private ArrayList<String>estrofasInvertidas;
 
     public TranslatorFileService() {
         estrofas=new ArrayList<String>();
-        invert=new ArrayList<String>();
+        estrofasInvertidas=new ArrayList<String>();
     }
 
-  /*  public String readFile(){
+   /*public String readFile(){
         try{
             FileReader file = new FileReader("C:\\Users\\HP\\Desktop\\original.txt");
             int res = file.read();
@@ -34,23 +34,23 @@ public class TranslatorFileService {
         }
         return null;
     }
-    public String readInvest() throws IOException {
-        String inputFileName = "C:\\Users\\HP\\Desktop\\original.txt";
-        InputStream in = new FileInputStream(inputFileName);
-        String texto= " ";
+        public String readInvest() throws IOException {
+            String inputFileName = "C:\\Users\\HP\\Desktop\\original.txt";
+            InputStream in = new FileInputStream(inputFileName);
+            String texto= " ";
 
-        int c=in.read();
-        while(c!=-1) {
-            c = in.read();
-            //out.write(c);
-            //System.out.println(c);
-            char letra = (char)c;
-            texto+=letra;
+            int c=in.read();
+            while(c!=-1) {
+                c = in.read();
+                //out.write(c);
+                //System.out.println(c);
+                char letra = (char)c;
+                texto+=letra;
 
+            }
+            in.close();
+            return texto;
         }
-        in.close();
-        return texto;
-    }
 
 
         public void fileOverturn() throws IOException{
@@ -60,19 +60,17 @@ public class TranslatorFileService {
                 sCadenaInvertida = sCadenaInvertida + txt.charAt(x);
             }
             System.out.println(sCadenaInvertida);
-        }*/
+        }
+    */
 
-        //codigo edson
-
-        public boolean invertFile() throws IOException {
-            String inputFileName = "src/main/resources/original.txt";
-            String outputFileName = "src/main/resources/estrofasEnOrdenInverso.txt";
+        public boolean esInvertido() throws IOException {
+            String inputFileName = "C:\\Users\\HP\\Desktop\\original.txt";
+            String outputFileName = "C:\\Users\\HP\\Desktop\\estrofasEnOrdenInverso.txt";
             File outputFile = new File(outputFileName);
             OutputStream out = new FileOutputStream(outputFileName);
-
-            runOfLines(inputFileName);
-            invertVerse();
-            String invertString = toString(invert);
+            recorrerLineas(inputFileName);
+            invertirEstrofas();
+            String invertString = toString(estrofasInvertidas);
             StreamUtils.copy(invertString, StandardCharsets.UTF_8, out);
             return  outputFile.exists();
         }
@@ -80,7 +78,7 @@ public class TranslatorFileService {
         public String toString(ArrayList<String> list){
             String cadena = " ";
             for (String line : list) {
-                if(line.equals("SALTADELINEA")){
+                if(line.equals("VACIO")){
                     cadena+="\n";
                 }else{
                     cadena+=line+"\n";
@@ -89,51 +87,44 @@ public class TranslatorFileService {
             return cadena;
         }
 
-        public void invertVerse(){
-            ArrayList<String> verse = new ArrayList<String>();
+        public void invertirEstrofas(){
+            ArrayList<String> listAux = new ArrayList<String>();
 
             for (int i = estrofas.size()-1; i>=0 ; i--){
-                if(estrofas.get(i).equals("SALTODELINEA")){
-                    for (int j = verse.size()-1; j>=0; j--){
-                        invert.add(verse.get(j));
+                if(estrofas.get(i).equals("VACIO")){
+                    for (int j = listAux.size()-1; j>=0; j--){
+                        estrofasInvertidas.add(listAux.get(j));
                     }
-                    invert.add("SALTODELINEA");
-                    verse.clear();
+                    estrofasInvertidas.add("VACIO");
+                    listAux.clear();
                 }else{
-                    verse.add(estrofas.get(i));
+                    listAux.add(estrofas.get(i));
                 }
             }
-            if(verse.size()>0){
-                for (int j = verse.size()-1 ; j>=0 ; j--){
-                    invert.add(verse.get(j));
+            if(listAux.size()>0){
+                for (int j = listAux.size()-1 ; j>=0 ; j--){
+                    estrofasInvertidas.add(listAux.get(j));
                 }
-                verse.clear();
+                listAux.clear();
             }
-
         }
 
-        public void runOfLines(String nameFile) {
+        public void recorrerLineas(String rutaDelArchivo) {
             BufferedReader br = null;
-
             try {
-                br = new BufferedReader(new FileReader(nameFile));
-
+                br = new BufferedReader(new FileReader(rutaDelArchivo));
                 String linea = br.readLine();
                 estrofas.add(linea);
                 while(linea != null)
                 {
-
                     linea = br.readLine();
                     if(!linea.equals("")){
                         estrofas.add(linea);
                     }
                     else{
-                       estrofas.add("SALTODELINEA");
+                       estrofas.add("VACIO");
                     }
                 }
-            }
-            catch (FileNotFoundException e) {
-                System.out.println(e.getMessage());
             }
             catch(Exception e) {
                 System.out.println(e.getMessage());
@@ -144,7 +135,6 @@ public class TranslatorFileService {
                         br.close();
                 }
                 catch (Exception e) {
-                    System.out.println("Error al cerrar el fichero");
                     System.out.println(e.getMessage());
                 }
             }
